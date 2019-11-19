@@ -14,7 +14,7 @@ class Config:
 
 class DevelopmentConfig(Config):
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = "mysql+mysqldb://root:@localhost:3306/product?charset=utf8mb4"
+    SQLALCHEMY_DATABASE_URI = "mysql+mysqldb://root:@localhost:3306/test?charset=utf8mb4"
 
     @classmethod
     def init_app(cls, app):
@@ -23,7 +23,7 @@ class DevelopmentConfig(Config):
 
 class TestingConfig(Config):
     TESTING = True
-    SQLALCHEMY_DATABASE_URI = "mysql+mysqldb://root:@localhost:3306/product-test?charset=utf8mb4"
+    SQLALCHEMY_DATABASE_URI = "mysql+mysqldb://root:@localhost:3306/test?charset=utf8mb4"
 
     @classmethod
     def init_app(cls, app):

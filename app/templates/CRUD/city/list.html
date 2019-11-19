@@ -6,26 +6,34 @@
 {% endblock %}
 
 {% block content %}
-
-    <div class="main-content-container container-fluid px-4">
+    {% if form.city_name.errors %}
+        {% for error in form.city_name.errors %}
+            <div class="alert alert-danger mt-2">
+                <strong class="">
+                    {{ error }}
+                </strong>
+            </div>
+        {% endfor %}
+    {% endif %}
+    <div class="main-content-container container-fluid px-0">
         <!-- Page Header -->
-        <div class="page-header row no-gutters py-4">
-            <div class="col-12 col-sm-4 text-center text-sm-left mb-0">
+        <div class="page-header row no-gutters mt-2">
+            <div class="col-8 col-sm-8 text-center text-sm-left mb-0">
                 <span class="text-uppercase page-subtitle">Overview</span>
                 <h3 class="page-title">City Table</h3>
             </div>
-        </div>
-        <div class="col-12 text-right justify-content-end">
-            <a href="/city/create" class="btn btn-lg btn-accent ml-auto">
-                <i class="material-icons">add</i>Add new city
-            </a>
+            <div class="col-4 col-sm-4 text-right justify-content-end">
+                <a href="/city/create" class="btn btn-lg btn-accent ml-auto">
+                    <i class="material-icons">add</i>Add new city
+                </a>
+            </div>
         </div>
         <!-- End Page Header -->
         <!-- Default Light Table -->
         <br><br>
         <div class="container">
             <div class="row">
-                <div class="col">
+                <div class="col pl-0 pr-0">
                     <div class="card card-small mb-4">
 
                         <div class="card-body p-0 pb-3 text-center">
@@ -60,16 +68,20 @@
                     </div>
                     <div class="modal-body">
                         <form action="{{ url_for('city.edit_city') }}" method="POST">
+                            {{ form.csrf_token }}
                             <div class="form-group">
                                 <label for="id_edit" class="col-sm-2" style="padding-left: 0">City Id</label>
                                 <input type="text" class="form-control form-control-lg" name="city_id" id="id_edit"
                                        readonly>
                             </div>
                             <div class="form-group">
-                                <label for="name_edit" class="col-sm-2" style="padding-left: 0">Name</label>
-                                <input type="text" class="form-control form-control-lg" name="city_name" id="name_edit"
-                                       required />
+                                <strong class="text-muted d-block mb-2">Name</strong>
+                                <div class="input-group mb-3">
+                                    {{ form.city_name(placeholder="Name", class="form-control", id="name_edit") }}
+                                </div>
                             </div>
+
+
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary btn-lg" data-dismiss="modal">Close
                                 </button>
