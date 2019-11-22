@@ -7,5 +7,5 @@ class Brand(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(50))
-    category = db.relationship(
-        "Category", backref='brand', lazy="dynamic")
+    # category = db.relationship(
+    #     "Category", backref='brand', lazy="dynamic")

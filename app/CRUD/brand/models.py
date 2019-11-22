@@ -1,9 +1,9 @@
 from app import db
-from app.entity.mysql.city import City as CityEntity
+from app.entity.mysql.brand import Brand as BrandEntity
 from constants import Pages
 
 
-class CityModel(CityEntity):
+class BrandModel(BrandEntity):
 
     def get_name_by_id(self, _id):
         return self.query.filter_by(id=_id).first().name
@@ -18,8 +18,8 @@ class CityModel(CityEntity):
         return self.query.order_by(self.id).all()
 
     def query_paginate(self, page):
-        cities = self.query.order_by(self.id).paginate(page, Pages['NUMBER_PER_PAGE'], error_out=False)
-        return cities.items, cities.pages
+        brands = self.query.order_by(self.id).paginate(page, Pages['NUMBER_PER_PAGE'], error_out=False)
+        return brands.items, brands.pages
 
     def edit(self, _id, name):
         try:
@@ -27,13 +27,13 @@ class CityModel(CityEntity):
             db.session.commit()
             return True, None
         except:
-            return False, "Your city is existed"
+            return False, "Your brand is existed"
 
     @classmethod
     def create(cls, name):
         try:
-            city = CityEntity(name=name)
-            db.session.add(city)
+            brand = BrandEntity(name=name)
+            db.session.add(brand)
             db.session.commit()
             return True
         except:

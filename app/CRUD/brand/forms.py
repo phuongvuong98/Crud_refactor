@@ -3,8 +3,8 @@ from wtforms import StringField
 from wtforms.validators import (DataRequired, Regexp, Length)
 
 
-class CityForm(FlaskForm):
-    city_name = StringField(
-        'city_name',
+class BrandForm(FlaskForm):
+    brand_name = StringField(
+        'brand_name',
         [DataRequired(), Regexp(r'^[a-zA-Z\s]*$'), Length(min=4, max=25)]
     )

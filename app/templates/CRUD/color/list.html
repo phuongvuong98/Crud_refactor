@@ -6,10 +6,10 @@
 {% endblock %}
 
 {% block content %}
-    {% if form.brand_name.errors %}
-        {% for error in form.brand_name.errors %}
+    {% if form.color_name.errors %}
+        {% for error in form.color_name.errors %}
             <div class="alert alert-danger mt-2">
-                <strong class="">
+                <strong>
                     {{ error }}
                 </strong>
             </div>
@@ -20,11 +20,11 @@
         <div class="page-header row no-gutters mt-2">
             <div class="col-8 col-sm-8 text-center text-sm-left mb-0">
                 <span class="text-uppercase page-subtitle">Overview</span>
-                <h3 class="page-title">Brand Table</h3>
+                <h3 class="page-title">Color Table</h3>
             </div>
             <div class="col-4 col-sm-4 text-right justify-content-end">
-                <a href="/brand/create" class="btn btn-lg btn-accent ml-auto">
-                    <i class="material-icons">add</i>Add new brand
+                <a href="/color/create" class="btn btn-lg btn-accent ml-auto">
+                    <i class="material-icons">add</i>Add new color
                 </a>
             </div>
         </div>
@@ -41,11 +41,11 @@
                                 <thead class="bg-light">
                                 <tr>
                                     <th scope="col" class="border-0">Id</th>
-                                    <th scope="col" class="border-0">Name</th>
+                                    <th scope="col" class="border-0">Value</th>
                                     <th scope="col" class="border-0">Actions</th>
                                 </tr>
                                 </thead>
-                                <tbody id="body-brand">
+                                <tbody id="body-color">
                                 <input style="display: none;" name="totalPages" id="totalPages"
                                        value="{{ total_pages }}"/>
                                 </tbody>
@@ -61,23 +61,23 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Modify brand</h5>
+                        <h5 class="modal-title" id="exampleModalLabel">Modify color</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
-                        <form action="{{ url_for('brand.edit_brand') }}" method="POST">
+                        <form action="{{ url_for('color.edit_color') }}" method="POST">
                             {{ form.csrf_token }}
                             <div class="form-group">
-                                <label for="id_edit" class="col-sm-2" style="padding-left: 0">Brand Id</label>
-                                <input type="text" class="form-control form-control-lg" name="brand_id" id="id_edit"
+                                <label for="id_edit" class="col-sm-2" style="padding-left: 0">Color Id</label>
+                                <input type="text" class="form-control form-control-lg" name="color_id" id="id_edit"
                                        readonly>
                             </div>
                             <div class="form-group">
                                 <strong class="text-muted d-block mb-2">Name</strong>
                                 <div class="input-group mb-3">
-                                    {{ form.brand_name(placeholder="Name", class="form-control", id="name_edit") }}
+                                    {{ form.color_name(placeholder="Name", class="form-control", id="name_edit") }}
                                 </div>
                             </div>
 
@@ -106,14 +106,14 @@
             visiblePages: 2,
             onPageClick: function (event, page) {
                 $('#page-content').text('Page ' + page);
-                $.ajax('/brand/api/list?page=' + page,
+                $.ajax('/color/api/list?page=' + page,
                     {
                         dataType: 'json',
                         success: function (data) {
-                            var allbrand = "";
-                            $('#body-brand').empty();
+                            var allcolor = "";
+                            $('#body-color').empty();
                             for (var i = 0; i < data.data.length; i++) {
-                                var addBrand = `
+                                var addColor = `
                                 <tr>
                                     <td>` + data.data[i].id + `</td>
                                     <td>` + data.data[i].name + `</td>
@@ -122,21 +122,21 @@
                                     </td>
                                 </tr>
                                 `;
-                                allbrand = allbrand + addBrand;
+                                allcolor = allcolor + addColor;
                             }
-                            $('#body-brand').append($(allbrand));
+                            $('#body-color').append($(allcolor));
                             $(".btn.btn-info").on("click", function () {
                                 var this_row = $(this).closest("tr");
-                                var brand_id = this_row
+                                var color_id = this_row
                                     .find("td")
                                     .eq(0)
                                     .text();
-                                var brand_name = this_row
+                                var color_name = this_row
                                     .find("td")
                                     .eq(1)
                                     .text();
-                                $("#id_edit").val(brand_id);
-                                $("#name_edit").val(brand_name);
+                                $("#id_edit").val(color_id);
+                                $("#name_edit").val(color_name);
                             });
                         },
                         error: function (jqXhr, textStatus, errorMessage) { // error callback
