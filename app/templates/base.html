@@ -55,48 +55,48 @@
                             <span>District</span>
                         </a>
                     </li>
-                    {#                        <li class="nav-item">#}
-                    {#                            <a class="nav-link {{ address_active }}" href="/address">#}
-                    {#                                <i class="material-icons">note_add</i>#}
-                    {#                                <span>Address</span>#}
-                    {#                            </a>#}
-                    {#                        </li>#}
-                    {#                        <li class="nav-item">#}
-                    {#                            <a class="nav-link {{store_active}}" href="/store">#}
-                    {#                                <i class="material-icons">note_add</i>#}
-                    {#                                <span>Store</span>#}
-                    {#                            </a>#}
-                    {#                        </li>#}
+                    <li class="nav-item">
+                        <a class="nav-link {{ address_active }}" href="/address">
+                            <i class="material-icons">note_add</i>
+                            <span>Address</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ store_active }}" href="/store">
+                            <i class="material-icons">note_add</i>
+                            <span>Store</span>
+                        </a>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link {{ brand_active }}" href="/brand">
                             <i class="material-icons">note_add</i>
                             <span>Brand</span>
                         </a>
                     </li>
-                    {#                        <li class="nav-item ">#}
-                    {#                            <a class="nav-link {{ category_active }}" href="/category">#}
-                    {#                                <i class="material-icons">note_add</i>#}
-                    {#                                <span>Category</span>#}
-                    {#                            </a>#}
-                    {#                        </li>#}
-                    {#                        <li class="nav-item">#}
-                    {#                            <a class="nav-link {{ product_active }}" href="/product">#}
-                    {#                                <i class="material-icons">note_add</i>#}
-                    {#                                <span>Product</span>#}
-                    {#                            </a>#}
-                    {#                        </li>#}
+                    <li class="nav-item ">
+                        <a class="nav-link {{ category_active }}" href="/category">
+                            <i class="material-icons">note_add</i>
+                            <span>Category</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ product_active }}" href="/product">
+                            <i class="material-icons">note_add</i>
+                            <span>Product</span>
+                        </a>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link {{ color_active }}" href="/color">
                             <i class="material-icons">note_add</i>
                             <span>Color</span>
                         </a>
                     </li>
-                    {#                        <li class="nav-item">#}
-                    {#                            <a class="nav-link {{ variant_active }}" href="/variants">#}
-                    {#                                <i class="material-icons">note_add</i>#}
-                    {#                                <span>Variants</span>#}
-                    {#                            </a>#}
-                    {#                        </li>#}
+                    <li class="nav-item">
+                        <a class="nav-link {{ variant_active }}" href="/variants">
+                            <i class="material-icons">note_add</i>
+                            <span>Variants</span>
+                        </a>
+                    </li>
             </div>
             <ul class="navbar-nav border-left flex-row ">
                 <li class="nav-item dropdown">
@@ -115,6 +115,16 @@
         <div class="main-navbar sticky-top bg-white">
             <!-- Main Navbar -->
             <nav class="navbar align-items-stretch navbar-light flex-md-nowrap p-0">
+                <form action="#" class="main-navbar__search w-100 d-none d-md-flex d-lg-flex">
+                    <div class="input-group input-group-seamless ml-3">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text">
+                                <i class="fas fa-search"></i>
+                            </div>
+                        </div>
+                        <input class="navbar-search form-control" type="text" placeholder="Search for something..."
+                               aria-label="Search"></div>
+                </form>
                 <ul class="navbar-nav border-left flex-row ">
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle text-nowrap px-3" data-toggle="dropdown" href="#"

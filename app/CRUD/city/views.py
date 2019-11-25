@@ -10,23 +10,17 @@ def list_city_api():
     page = request.args.get('page', 1, type=int)
     city = CityModel()
     cities, total_pages = city.query_paginate(page)
-    arr_city = []
-    for city in cities:
-        tmp_city = {
-            'id': str(city.id),
-            'name': city.name
-        }
-        arr_city.append(tmp_city)
     res = {
         "total_pages": total_pages,
-        "data": arr_city,
+        "data": [{"id": str(city.id), "name": city.name} for city in cities],
     }
     return make_response(jsonify(res), 200)
 
 
 @city_blueprint.route('/', methods=['GET'])
-def list_city(error=None):
-    form = CityForm()
+def list_city(error=None, form=None):
+    if form is None:
+        form = CityForm()
     page = request.args.get('page', 1, type=int)
     city = CityModel()
     cities, total_pages = city.query_paginate(page)
@@ -39,24 +33,21 @@ def create_city(error=None):
     if form.validate_on_submit():
         if request.method == 'POST':
             city_name = request.form['city_name']
-            city = CityModel()
-            city_exist = city.find(city_name)
-            if city_exist is None or len(city_exist) == 0:
-                return CityModel.create(city_name) and redirect('/city')
-            else:
-                error = "Your city is error"
+            result, error = CityModel.create(city_name)
+            if error:
+                return list_city(error)
+            return redirect('/city')
     return render_template('CRUD/city/create.html', error=error, city_active="active", form=form)
 
 
-@city_blueprint.route('/edit', methods=['POST'])
+@city_blueprint.route('/', methods=['POST'])
 def edit_city():
     form = CityForm()
     city = CityModel()
-    cities, total_pages = city.query_paginate(1)
     if form.validate_on_submit():
         city_id = request.form['city_id']
         city_name = request.form['city_name']
         result, error = city.edit(city_id, city_name)
         if error:
             return list_city(error)
-    return render_template('CRUD/city/list.html', total_pages=total_pages, city_active="active", form=form)
+    return list_city(form=form)

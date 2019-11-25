@@ -13,30 +13,25 @@ def list_district_api():
     city = CityModel()
     page = request.args.get('page', 1, type=int)
     districts, total_pages = district.query_paginate(page)
-    arr_dis = []
-    for district in districts:
-        tmp_dis = {
-            'id': str(district.id),
-            'city_name': city.get_name_by_id(district.city_id),
-            'name': district.name
-        }
-        arr_dis.append(tmp_dis)
     res = {
         "total_pages": total_pages,
-        "data": arr_dis
+        "data": [{"id": str(district.id), 'city_name': city.get_name_by_id(district.city_id), "name": district.name} for
+                 district in districts],
     }
     return make_response(jsonify(res), 200)
 
 
 @district_blueprint.route('/', methods=['GET'])
-def list_district(error=None):
+def list_district(error=None, form=None):
     city = CityModel()
-    form = DistrictForm()
+    if form is None:
+        form = DistrictForm()
     district = DistrictModel()
     page = request.args.get('page', 1, type=int)
     districts, total_pages = district.query_paginate(page)
     cities = city.query_all()
-    return render_template('CRUD/district/list.html', total_pages=total_pages, cities=cities, district_active="active", form=form)
+    return render_template('CRUD/district/list.html', total_pages=total_pages, cities=cities, district_active="active",
+                           form=form)
 
 
 @district_blueprint.route('/create', methods=['GET', 'POST'])
@@ -55,15 +50,12 @@ def create_district(error=None):
             else:
                 error = "Your district is error"
     return render_template('CRUD/district/create.html', cities=cities, error=error, district_active="active", form=form)
-#
-#
-@district_blueprint.route('/edit', methods=['POST'])
+
+
+@district_blueprint.route('/', methods=['POST'])
 def edit_district():
     form = DistrictForm()
     district = DistrictModel()
-    city = CityModel()
-    districts, total_pages = district.query_paginate(1)
-    cities = city.query_all()
     if form.validate_on_submit():
         district_id = request.form['district_id']
         district_name = request.form['district_name']
@@ -71,4 +63,4 @@ def edit_district():
         result, error = district.edit(district_id, district_name, city_id)
         if error:
             return list_district(error)
-    return render_template('CRUD/district/list.html', total_pages=total_pages, cities=cities, district_active="active", form=form)
+    return list_district(form=form)

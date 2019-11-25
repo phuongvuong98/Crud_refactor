@@ -1,61 +1,98 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <!-- errors -->
-    {% if error %}
-        <div class="error__content mt-4">
-            <h3>{{ error }}</h3>
-        </div>
-    {% endif %}
+    {% with messages = get_flashed_messages(category_filter=["error"]) %}
+        {% if messages %}
+            {%- for msg in messages %}
+                <div class="alert alert-danger mt-2">
+                <strong>{{ msg }}</strong>
+                </div>
+            {% endfor -%}
+        {% endif %}
+    {% endwith %}
     <div class="main-content-container container-fluid px-4">
         <!-- Page Header -->
         <div class="page-header row no-gutters py-4 mb-3 border-bottom">
             <div class="col-12 col-sm-4 text-center text-sm-left mb-0">
-                <h3 class="page-title">Create a product</h3>
+                <h3 class="page-title">Create product</h3>
             </div>
         </div>
         <!-- End Page Header -->
 
         <div class="row">
-            <div class="col-lg-12 mb-4">
-                <div class="card card-small ml-4 mr-4">
+            <div class="col-lg-8 mb-4">
+                <div class="card card-small mb-4">
+
                     <ul class="list-group list-group-flush">
+                        <li class="list-group-item p-3">
+                        </li>
                         <li class="list-group-item p-3">
                             <div class="row">
                                 <div class="col-sm-12 col-md-12">
                                     <form action="/product/create" method="POST">
+                                        {{ form.csrf_token }}
                                         <div class="form-group">
-                                            <strong class="text-muted d-block mb-2">Name</strong>
+                                            <strong class="text-muted d-block mb-2">Brand</strong>
                                             <div class="input-group mb-3">
-                                                <input type="text" class="form-control" placeholder="Name"
-                                                       aria-label="name"
-                                                       aria-describedby="basic-addon1" name="product_name">
+                                                <select class="form-control" onchange="getCategoryByBrand(this)"
+                                                        name="select-brand">
+                                                    <option selected>...</option>
+                                                    {% for brand in list_brand %}
+                                                        <option value="{{ brand.id }}">
+                                                            {{ brand.name }}</option>
+                                                    {% endfor %}
+
+                                                </select>
                                             </div>
                                         </div>
                                         <div class="form-group">
-                                            <label for="category_edit" class="col-sm-2"
-                                                   style="padding-left: 0">Category</label>
-                                            <select class="form-control form-control-lg" id="category_edit"
-                                                    name="category_id">
-                                                {% for category in categories %}
-                                                    <option value="{{ category.id }}">{{ category.name }}</option>
-                                                {% endfor %}
-                                            </select>
+                                            <strong class="text-muted d-block mb-2">Category</strong>
+                                            <div class="input-group mb-3">
+                                                <select disabled class="form-control" id="select-category"
+                                                        name="select-category">
+                                                    <!-- {% for category in list_category %}
+                                                <option>{{ category }}</option>
+                                                {% endfor %} -->
+                                                </select>
+                                            </div>
+
                                         </div>
                                         <div class="form-group">
-                                            <button type="submit" class="mb-2 btn btn-primary mr-2 w-100">
-                                                Create
+                                            <strong class="text-muted d-block mb-2">Product name</strong>
+                                            <div class="input-group mb-3">
+                                                {{ form.product_name(placeholder="Name", class="form-control") }}
+                                            </div>
+                                        </div>
+
+                                        {% if form.product_name.errors %}
+                                            {% for error in form.product_name.errors %}
+                                                <div class="form-group">
+                                                    <strong class="text-muted d-block mb-2">
+                                                        {{ error }}
+                                                    </strong>
+                                                </div>
+                                            {% endfor %}
+                                        {% endif %}
+
+                                        <div class="form-group">
+                                            <button type="submit" class="mb-2 btn btn-primary mr-2 w-100">Create
                                             </button>
                                         </div>
+
                                     </form>
                                 </div>
+
                             </div>
                         </li>
                     </ul>
                 </div>
             </div>
+            <div class="col-lg-4 mb-4">
+
+            </div>
         </div>
     </div>
 
+    <script src="{{ url_for('static', filename='product/product.js') }}"></script>
 
 {% endblock %}

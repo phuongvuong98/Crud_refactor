@@ -10,23 +10,17 @@ def list_color_api():
     page = request.args.get('page', 1, type=int)
     color = ColorModel()
     colors, total_pages = color.query_paginate(page)
-    arr_color = []
-    for color in colors:
-        tmp_color = {
-            'id': str(color.id),
-            'name': color.value
-        }
-        arr_color.append(tmp_color)
     res = {
         "total_pages": total_pages,
-        "data": arr_color,
+        "data": [{"id": str(color.id), "name": color.value} for color in colors],
     }
     return make_response(jsonify(res), 200)
 
 
 @color_blueprint.route('/', methods=['GET'])
-def list_color(error=None):
-    form = ColorForm()
+def list_color(error=None, form=None):
+    if form is None:
+        form = ColorForm()
     page = request.args.get('page', 1, type=int)
     color = ColorModel()
     colors, total_pages = color.query_paginate(page)
@@ -39,12 +33,10 @@ def create_color(error=None):
     if form.validate_on_submit():
         if request.method == 'POST':
             color_value = request.form['color_name']
-            color = ColorModel()
-            color_exist = color.find(color_value)
-            if color_exist is None or len(color_exist) == 0:
-                return ColorModel.create(color_value) and redirect('/color')
-            else:
-                error = "Your color is error"
+            result, error = ColorModel.create(color_value)
+            if error:
+                return list_color(error)
+            return redirect('/color')
     return render_template('CRUD/color/create.html', error=error, color_active="active", form=form)
 
 
@@ -52,11 +44,10 @@ def create_color(error=None):
 def edit_color():
     form = ColorForm()
     color = ColorModel()
-    colors, total_pages = color.query_paginate(1)
     if form.validate_on_submit():
         color_id = request.form['color_id']
         color_value = request.form['color_name']
         result, error = color.edit(color_id, color_value)
         if error:
             return list_color(error)
-    return render_template('CRUD/color/list.html', total_pages=total_pages, color_active="active", form=form)
+    return list_color(form=form)

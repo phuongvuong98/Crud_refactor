@@ -1,6 +1,9 @@
+from sqlalchemy.exc import SQLAlchemyError
+
 from app import db
 from app.entity.mysql.color import Color as ColorEntity
 from constants import Pages
+from constants import Errors
 
 
 class ColorModel(ColorEntity):
@@ -26,8 +29,9 @@ class ColorModel(ColorEntity):
             db.session.query(self.__class__).filter(self.__class__.id == _id).update({"value": value})
             db.session.commit()
             return True, None
-        except:
-            return False, "Your color is existed"
+        except SQLAlchemyError as e:
+            db.session.rollback()
+            return False, str(e.orig)
 
     @classmethod
     def create(cls, value):
@@ -35,6 +39,7 @@ class ColorModel(ColorEntity):
             color = ColorEntity(value=value)
             db.session.add(color)
             db.session.commit()
-            return True
-        except:
-            return False
+            return True, None
+        except SQLAlchemyError as e:
+            db.session.rollback()
+            return False, str(e.orig)

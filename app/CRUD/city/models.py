@@ -1,6 +1,9 @@
+from sqlalchemy.exc import SQLAlchemyError
+
 from app import db
 from app.entity.mysql.city import City as CityEntity
 from constants import Pages
+from constants import Errors
 
 
 class CityModel(CityEntity):
@@ -26,8 +29,9 @@ class CityModel(CityEntity):
             db.session.query(self.__class__).filter(self.__class__.id == _id).update({"name": name})
             db.session.commit()
             return True, None
-        except:
-            return False, "Your city is existed"
+        except SQLAlchemyError as e:
+            db.session.rollback()
+            return False, str(e.orig)
 
     @classmethod
     def create(cls, name):
@@ -35,6 +39,7 @@ class CityModel(CityEntity):
             city = CityEntity(name=name)
             db.session.add(city)
             db.session.commit()
-            return True
-        except:
-            return False
+            return True, None
+        except SQLAlchemyError as e:
+            db.session.rollback()
+            return False, str(e.orig)

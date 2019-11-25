@@ -8,7 +8,7 @@ class District(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(50))
 
-    # address = db.relationship(
-    #     "Address", backref='district', lazy="dynamic")
+    address = db.relationship(
+        "Address", backref='district', lazy="dynamic")
 
     city_id = db.Column(db.Integer, db.ForeignKey('city.id'))

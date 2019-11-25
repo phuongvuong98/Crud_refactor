@@ -1,6 +1,8 @@
+from sqlalchemy.exc import SQLAlchemyError
+
 from app import db
 from app.entity.mysql.brand import Brand as BrandEntity
-from constants import Pages
+from constants import Pages, Errors
 
 
 class BrandModel(BrandEntity):
@@ -26,8 +28,9 @@ class BrandModel(BrandEntity):
             db.session.query(self.__class__).filter(self.__class__.id == _id).update({"name": name})
             db.session.commit()
             return True, None
-        except:
-            return False, "Your brand is existed"
+        except SQLAlchemyError as e:
+            db.session.rollback()
+            return False, str(e.orig)
 
     @classmethod
     def create(cls, name):
@@ -35,6 +38,7 @@ class BrandModel(BrandEntity):
             brand = BrandEntity(name=name)
             db.session.add(brand)
             db.session.commit()
-            return True
-        except:
-            return False
+            return True, None
+        except SQLAlchemyError as e:
+            db.session.rollback()
+            return False, str(e.orig)

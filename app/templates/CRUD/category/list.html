@@ -6,28 +6,36 @@
 {% endblock %}
 
 {% block content %}
-
-    <div class="main-content-container container-fluid px-4">
+    {% if form.category_name.errors %}
+        {% for error in form.category_name.errors %}
+            <div class="alert alert-danger mt-2">
+                <strong>
+                    {{ error }}
+                </strong>
+            </div>
+        {% endfor %}
+    {% endif %}
+    <div class="main-content-container container-fluid px-0">
         <!-- Page Header -->
-        <div class="page-header row no-gutters py-4">
-            <div class="col-12 col-sm-4 text-center text-sm-left mb-0">
+        <div class="page-header row no-gutters mt-2">
+            <div class="col-8 col-sm-8 text-center text-sm-left mb-0">
                 <span class="text-uppercase page-subtitle">Overview</span>
                 <h3 class="page-title">Category Table</h3>
             </div>
+            <div class="col-4 col-sm-4 text-right justify-content-end">
+                <a href="/category/create" class="btn btn-lg btn-accent ml-auto">
+                    <i class="material-icons">add</i>Add new category
+                </a>
+            </div>
         </div>
-        <div class="col-12 text-right justify-content-end">
-            <a href="/category/create" class="btn btn-lg btn-accent ml-auto">
-                <i class="material-icons">add</i>Add new category
-            </a>
-        </div>
+
         <!-- End Page Header -->
         <!-- Default Light Table -->
         <br><br>
         <div class="container">
             <div class="row">
-                <div class="col">
+                <div class="col pl-0 pr-0">
                     <div class="card card-small mb-4">
-
                         <div class="card-body p-0 pb-3 text-center">
                             <table class="table mb-0">
                                 <thead class="bg-light">
@@ -35,7 +43,7 @@
                                     <th scope="col" class="border-0">Id</th>
                                     <th scope="col" class="border-0">Name</th>
                                     <th scope="col" class="border-0">Brand</th>
-                                    <th scope="col" class="border-0">Actions</th>
+                                    <th scope="col" class="border-0">Action</th>
                                 </tr>
                                 </thead>
                                 <tbody id="body-category">
@@ -44,11 +52,12 @@
                                 </tbody>
                             </table>
                         </div>
+
                     </div>
                 </div>
             </div>
         </div>
-        {#    MODEL#}
+
         <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
              aria-hidden="true">
             <div class="modal-dialog" role="document">
@@ -61,21 +70,23 @@
                     </div>
                     <div class="modal-body">
                         <form action="{{ url_for('category.edit_category') }}" method="POST">
+                        {{ form.csrf_token }}
                             <div class="form-group">
                                 <label for="id_edit" class="col-sm-2" style="padding-left: 0">Id</label>
                                 <input type="text" class="form-control form-control-lg" name="category_id" id="id_edit"
                                        readonly>
                             </div>
                             <div class="form-group">
-                                <label for="name_edit" class="col-sm-2" style="padding-left: 0">Name</label>
-                                <input type="text" class="form-control form-control-lg" name="category_name"
-                                       id="name_edit" required />
+                                <strong class="text-muted d-block mb-2">Name</strong>
+                                <div class="input-group mb-3">
+                                    {{ form.category_name(placeholder="Name", class="form-control", id="name_edit") }}
+                                </div>
                             </div>
                             <div class="form-group">
-                                <label for="city_edit" class="col-sm-2"
+                                <label for="brand_edit" class="col-sm-2"
                                        style="padding-left: 0">Brand</label>
                                 <select class="form-control form-control-lg" name="brand_id"
-                                       id="brand_id_edit">
+                                        id="brand_id_edit">
                                     {% for brand in brands %}
                                         <option value="{{ brand.id }}">{{ brand.name }}</option>
                                     {% endfor %}
@@ -90,9 +101,8 @@
                     </div>
                 </div>
             </div>
-            {#    END MODEL#}
-
         </div>
+
         <div class="container">
             <nav aria-label="Page navigation">
                 <ul class="pagination justify-content-end" id="pagination"></ul>
@@ -109,10 +119,10 @@
                     {
                         dataType: 'json',
                         success: function (data) {
-                            var allCategory = "";
+                            var all_category = "";
                             $('#body-category').empty();
                             for (var i = 0; i < data.data.length; i++) {
-                                var addCategory = `
+                                var add_category = `
                                 <tr>
                                     <td>` + data.data[i].id + `</td>
                                     <td>` + data.data[i].name + `</td>
@@ -122,9 +132,9 @@
                                     </td>
                                 </tr>
                                 `;
-                                allCategory = allCategory + addCategory;
+                                all_category = all_category + add_category;
                             }
-                            $('#body-category').append($(allCategory));
+                            $('#body-category').append($(all_category));
                             $(".btn.btn-info").on("click", function () {
                                 var this_row = $(this).closest("tr");
                                 var category_id = this_row
@@ -151,4 +161,5 @@
             }
         });
     </script>
+
 {% endblock %}

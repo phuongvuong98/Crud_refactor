@@ -1,62 +1,68 @@
-from flask import Blueprint, render_template, request, make_response, jsonify, redirect
+from flask import Blueprint, render_template, request, jsonify, flash, redirect, url_for
 
-from app import db
-from app.models import City, Category, Brand, Product
+from app.CRUD.product.forms import ProductForm
+from app.CRUD.brand.models import BrandModel
+from app.CRUD.product.models import ProductModel
+from app.CRUD.category.models import CategoryModel
+
+from constants import Errors
 
 product_blueprint = Blueprint('product', __name__, template_folder='templates')
 
 
-@product_blueprint.route('/api/list', methods=['GET'])
-def list_product_api():
-    page = request.args.get('page', 1, type=int)
-    products = Product.query.paginate(page, 10, error_out=False)
-    total_pages = products.pages
-    arr_product = []
-    for product in products.items:
-        tmp_product = {
-            'id': product.id,
-            'name': product.name,
-            'category_name': Category.query.get_or_404(int(product.category_id)).name
-        }
-        arr_product.append(tmp_product)
-    res = {
-        "total_pages": total_pages,
-        "data": arr_product,
-    }
-    return make_response(jsonify(res), 200)
+@product_blueprint.route('/create', methods=['POST', 'GET'])
+def create_product():
+    form = ProductForm()
+    brand = BrandModel()
+    list_brand = brand.query_all()
+    if form.validate_on_submit():
+        if request.method == 'POST':
+            category_id = request.form.get('select-category')
+            name = request.form.get('product_name')
+            result, error = ProductModel.create(category_id, name)
+            if error:
+                return render_template('CRUD/product/create.html', list_brand=list_brand, product_active="active", form=form, error=error)
+            return redirect('/product')
+    return render_template('CRUD/product/create.html', list_brand=list_brand, product_active="active", form=form)
+
+
+@product_blueprint.route('/category', methods=['GET'])
+def get_category_by_brand():
+    brand_id = request.args.get('brand_id')
+    category = CategoryModel()
+    if not brand_id:
+        return jsonify({})
+    categorys = category.query_by_brand_id(brand_id)
+    jsonable_category = [{'id': category.id, 'name': category.name}
+                         for category in categorys]
+    return jsonify(jsonable_category)
 
 
 @product_blueprint.route('/', methods=['GET'])
-def list_product():
-    page = request.args.get('page', 1, type=int)
-    products = Product.query.paginate(page, 10, error_out=False)
-    total_pages = products.pages
-    categories = Category.query.all()
-    return render_template('CRUD/product/list.html', total_pages=total_pages, categories=categories, product_active="active")
+def list_products(error=None, form=None):
+    if form is None:
+        form = ProductForm()
+    brand = BrandModel()
+    product = ProductModel()
+    page = request.args.get("page", 1, type=int)
+    products_pagination, total_page, current_page = product.query_paginate(page)
+    products = [{'brand': product.category.brand.name, 'brand_id': product.category.brand.id,
+                  'category': product.category.name, 'category_id': product.category.id,
+                  'name': product.name, 'id': product.id}
+                 for product in products_pagination]
+    list_brand = brand.query_all()
+    return render_template('CRUD/product/list.html', products=products, total_page=total_page, current_page=current_page, list_brand=list_brand, product_active="active", form=form, error=error)
 
 
-@product_blueprint.route('/create', methods=['GET', 'POST'])
-def create_product(error=None):
-    categories = Category.query.all()
-    if request.method == 'POST':
-        product_name = request.form['product_name']
-        category_id = request.form['category_id']
-        product_exist = Category.query.filter_by(name=product_name).first()
-        if product_exist is None and product_name != "":
-            new_product = Product(name=product_name, category_id=category_id)
-            db.session.add(new_product)
-            db.session.commit()
-            return redirect('/product')
-        else:
-            error = "Your product is error"
-    return render_template('CRUD/product/create.html', categories=categories, error=error, product_active="active")
-
-
-@product_blueprint.route('/edit', methods=['POST'])
+@product_blueprint.route('/', methods=['POST'])
 def edit_product():
-    product_id = request.form['product_id']
-    product_name = request.form['product_name']
-    category_id = request.form['category_id']
-    db.session.query(Product).filter(Product.id == product_id).update({"name": product_name, "category_id": int(category_id)})
-    db.session.commit()
-    return redirect('/product')
+    form = ProductForm()
+    product = ProductModel()
+    if form.validate_on_submit():
+        product_id = request.form.get('product_id', None)
+        category_id = request.form.get('category_id')
+        product_name = request.form.get('product_name')
+        result, error = product.edit(product_id, category_id, product_name)
+        if error:
+            return list_products(error)
+    return list_products(form=form)

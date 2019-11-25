@@ -10,23 +10,17 @@ def list_brand_api():
     page = request.args.get('page', 1, type=int)
     brand = BrandModel()
     brands, total_pages = brand.query_paginate(page)
-    arr_brand = []
-    for brand in brands:
-        tmp_brand = {
-            'id': str(brand.id),
-            'name': brand.name
-        }
-        arr_brand.append(tmp_brand)
     res = {
         "total_pages": total_pages,
-        "data": arr_brand,
+        "data": [{"id": str(brand.id), "name": brand.name} for brand in brands],
     }
     return make_response(jsonify(res), 200)
 
 
 @brand_blueprint.route('/', methods=['GET'])
-def list_brand(error=None):
-    form = BrandForm()
+def list_brand(error=None, form=None):
+    if form is None:
+        form = BrandForm()
     page = request.args.get('page', 1, type=int)
     brand = BrandModel()
     brands, total_pages = brand.query_paginate(page)
@@ -39,24 +33,21 @@ def create_brand(error=None):
     if form.validate_on_submit():
         if request.method == 'POST':
             brand_name = request.form['brand_name']
-            brand = BrandModel()
-            brand_exist = brand.find(brand_name)
-            if brand_exist is None or len(brand_exist) == 0:
-                return BrandModel.create(brand_name) and redirect('/brand')
-            else:
-                error = "Your brand is error"
+            result, error = BrandModel.create(brand_name)
+            if error:
+                return list_brand(error)
+            return redirect('/brand')
     return render_template('CRUD/brand/create.html', error=error, brand_active="active", form=form)
 
 
-@brand_blueprint.route('/edit', methods=['POST'])
+@brand_blueprint.route('/', methods=['POST'])
 def edit_brand():
     form = BrandForm()
     brand = BrandModel()
-    brands, total_pages = brand.query_paginate(1)
     if form.validate_on_submit():
         brand_id = request.form['brand_id']
         brand_name = request.form['brand_name']
         result, error = brand.edit(brand_id, brand_name)
         if error:
             return list_brand(error)
-    return render_template('CRUD/brand/list.html', total_pages=total_pages, brand_active="active", form=form)
+    return list_brand(form=form)

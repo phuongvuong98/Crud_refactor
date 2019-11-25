@@ -7,5 +7,5 @@ class Color(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     value = db.Column(db.String(50), unique=True)
-    # product_variant = db.relationship(
-    #     "ProductVariant", backref='color', lazy="dynamic")
+    product_variant = db.relationship(
+        "ProductVariant", backref='color', lazy="dynamic")
