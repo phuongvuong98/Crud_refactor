@@ -1,6 +1,6 @@
 from behave import given, when, then
 from app import db
-from app.models import City, Brand
+from app.search import City, Brand
 
 
 @given(u'When get into "brand" page with blank list and click the create button.')

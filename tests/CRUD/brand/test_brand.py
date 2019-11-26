@@ -1,5 +1,5 @@
 
-from app.models import Brand
+from app.search import Brand
 from tests.test_client import FlaskClientTestCase
 from app import db
 

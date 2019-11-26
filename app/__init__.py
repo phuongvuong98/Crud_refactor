@@ -2,6 +2,7 @@ from flask import Flask
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from config import config
+from elasticsearch import Elasticsearch
 db = SQLAlchemy()
 
 
@@ -11,6 +12,9 @@ def create_app(config_name):
     app.config.from_object(config[config_name])
     config[config_name].init_app(app)
     db.init_app(app)
+    app.elasticsearch = Elasticsearch([app.config['ELASTICSEARCH_URL']]) \
+        if app.config['ELASTICSEARCH_URL'] else None
+    print(app.config['ELASTICSEARCH_URL'])
     from app.CRUD.city.views import city_blueprint
     from app.CRUD.district.views import district_blueprint
     from app.CRUD.color.views import color_blueprint

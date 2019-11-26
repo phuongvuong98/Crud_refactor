@@ -1,5 +1,5 @@
 from app import db
-from app.models import Address, District, City
+from app.search import Address, District, City
 from tests.test_client import FlaskClientTestCase
 
 

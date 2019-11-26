@@ -6,6 +6,8 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'hard to guess string'
     SQLALCHEMY_TRACK_MODIFICATIONS = "False"
+    ELASTICSEARCH_URL = 'http://localhost:9200'
+    # ELASTICSEARCH_URL = os.environ.get('ELASTICSEARCH_URL')
 
     @staticmethod
     def init_app(app):

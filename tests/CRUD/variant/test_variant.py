@@ -1,5 +1,5 @@
 from app import db
-from app.models import Product, Store, Color, Address, District, City, Category, Brand, ProductVariant
+from app.search import Product, Store, Color, Address, District, City, Category, Brand, ProductVariant
 from tests.test_client import FlaskClientTestCase
 
 
