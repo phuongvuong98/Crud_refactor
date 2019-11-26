@@ -47,3 +47,6 @@ class ProductModel(ProductEntity):
         except SQLAlchemyError as e:
             db.session.rollback()
             return False, str(e.orig)
+
+    def get_value(self):
+        return self.name

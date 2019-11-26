@@ -32,3 +32,6 @@ class DistrictModel(DistrictEntity):
             return True
         except:
             return False
+
+    def get_value(self):
+        return self.name

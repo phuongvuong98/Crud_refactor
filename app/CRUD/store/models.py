@@ -36,3 +36,6 @@ class StoreModel(StoreEntity):
             return True
         except:
             return False
+
+    def get_value(self):
+        return self.store_name

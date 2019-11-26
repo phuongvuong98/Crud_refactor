@@ -66,3 +66,6 @@ class AddressModel(AddressEntity):
             when.append((ids[i], i))
         return cls.query.filter(cls.id.in_(ids)).order_by(
             db.case(when, value=cls.id)).all(), total
+
+    def get_value(self):
+        return self.detail

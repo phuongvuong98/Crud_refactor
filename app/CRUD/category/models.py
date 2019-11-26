@@ -26,7 +26,8 @@ class CategoryModel(CategoryEntity):
 
     def edit(self, _id, name, brand_id):
         try:
-            db.session.query(self.__class__).filter(self.__class__.id == _id).update({"name": name, "brand_id": brand_id})
+            db.session.query(self.__class__).filter(self.__class__.id == _id).update(
+                {"name": name, "brand_id": brand_id})
             db.session.commit()
             return True, None
         except:
@@ -41,3 +42,6 @@ class CategoryModel(CategoryEntity):
             return True
         except:
             return False
+
+    def get_value(self):
+        return self.name

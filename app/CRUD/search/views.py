@@ -15,22 +15,15 @@ search_blueprint = Blueprint('search', __name__, template_folder='templates')
 
 
 @search_blueprint.route('/', methods=['GET'])
-def home(error=None, form=None):
+def home():
     form = SearchForm()
-    if not form.validate():
-        return redirect('/')
-    page = request.args.get('page', 1, type=int)
-    print("data:", form.q.data)
+    if not form.validate() or not form.q.data:
+        return redirect('/city')
     cls_model = [AddressModel, BrandModel, CategoryModel, CityModel, ColorModel, DistrictModel, ProductModel, StoreModel]
     reindex_all = [model.reindex() for model in cls_model]
-    search_model = [model.search(form.q.data, page, 10) for model in cls_model]
+    search_model = [model.search(form.q.data, 1, 10) for model in cls_model]
     search_obj = []
     for obj, total in search_model:
         if total != 0:
             search_obj.extend(obj)
-    print("results", search_obj)
-    # next_url = url_for('main.search', q=g.search_form.q.data, page=page + 1) \
-    #     if total > page * current_app.config['POSTS_PER_PAGE'] else None
-    # prev_url = url_for('main.search', q=g.search_form.q.data, page=page - 1) \
-    #     if page > 1 else None
-    return render_template('base.html')
+    return render_template('CRUD/search/list.html', search_obj=search_obj, form=form)
