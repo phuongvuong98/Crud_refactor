@@ -8,7 +8,7 @@ class ProductVariant(SearchableMixin, db.Model):
     __searchable__ = ['price']
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    price = db.Column(db.BigInteger)
+    price = db.Column(db.String(100))
     product_id = db.Column(db.Integer, db.ForeignKey('product.id'))
     store_id = db.Column(db.Integer, db.ForeignKey('store.id'))
     color_id = db.Column(db.Integer, db.ForeignKey('color.id'))

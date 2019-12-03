@@ -1,9 +1,4 @@
-from flask import Blueprint, render_template, current_app, request, jsonify, redirect, url_for
-from app import db
-
-from app.entity.mysql.city import City
-from app.entity.mysql.district import District
-from app.entity.mysql.address import Address
+from flask import Blueprint, render_template, request, jsonify, redirect, url_for
 from app.CRUD.product_variant.models import ProductVariantModel
 from app.CRUD.store.models import StoreModel
 from app.CRUD.product.models import ProductModel

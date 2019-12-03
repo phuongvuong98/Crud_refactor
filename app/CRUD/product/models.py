@@ -30,6 +30,7 @@ class ProductModel(ProductEntity):
                 }
             )
             db.session.commit()
+            ProductEntity.reindex()
             return True, None
         except SQLAlchemyError as e:
             db.session.rollback()
@@ -43,6 +44,7 @@ class ProductModel(ProductEntity):
             product = ProductEntity(category_id=category_id, name=name)
             db.session.add(product)
             db.session.commit()
+            ProductEntity.reindex()
             return True, None
         except SQLAlchemyError as e:
             db.session.rollback()

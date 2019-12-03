@@ -19,8 +19,8 @@ def home():
     form = SearchForm()
     if not form.validate() or not form.q.data:
         return redirect('/city')
-    cls_model = [AddressModel, BrandModel, CategoryModel, CityModel, ColorModel, DistrictModel, ProductModel, StoreModel]
-    reindex_all = [model.reindex() for model in cls_model]
+    cls_model = [AddressModel, BrandModel, CategoryModel, CityModel, ColorModel, DistrictModel, ProductModel, StoreModel, ProductVariantModel]
+    # reindex_all = [model.reindex() for model in cls_model]
     search_model = [model.search(form.q.data, 1, 10) for model in cls_model]
     search_obj = []
     for obj, total in search_model:

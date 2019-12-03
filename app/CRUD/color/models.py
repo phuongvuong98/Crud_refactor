@@ -28,6 +28,7 @@ class ColorModel(ColorEntity):
         try:
             db.session.query(self.__class__).filter(self.__class__.id == _id).update({"value": value})
             db.session.commit()
+            ColorEntity.reindex()
             return True, None
         except SQLAlchemyError as e:
             db.session.rollback()
@@ -39,6 +40,7 @@ class ColorModel(ColorEntity):
             color = ColorEntity(value=value)
             db.session.add(color)
             db.session.commit()
+            ColorEntity.reindex()
             return True, None
         except SQLAlchemyError as e:
             db.session.rollback()

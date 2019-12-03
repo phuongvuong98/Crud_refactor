@@ -1,3 +1,4 @@
+
 from sqlalchemy.exc import SQLAlchemyError
 
 from app import db
@@ -28,6 +29,7 @@ class CityModel(CityEntity):
         try:
             db.session.query(self.__class__).filter(self.__class__.id == _id).update({"name": name})
             db.session.commit()
+            CityEntity.reindex()
             return True, None
         except SQLAlchemyError as e:
             db.session.rollback()

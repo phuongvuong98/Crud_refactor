@@ -19,6 +19,7 @@ class DistrictModel(DistrictEntity):
         try:
             db.session.query(self.__class__).filter(self.__class__.id == _id).update({"name": name, "city_id": city_id})
             db.session.commit()
+            DistrictEntity.reindex()
             return True, None
         except:
             return False, Errors.ERROR_EXIST.value
@@ -29,6 +30,7 @@ class DistrictModel(DistrictEntity):
             district = DistrictEntity(name=name, city_id=city_id)
             db.session.add(district)
             db.session.commit()
+            DistrictEntity.reindex()
             return True
         except:
             return False

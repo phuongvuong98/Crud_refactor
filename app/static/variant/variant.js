@@ -1,5 +1,5 @@
 var edit_url = "/variants/api/edit";
-$
+
 $("#modify").on("click", function (event) {
     event.preventDefault();
     var id = $("#id_edit").val();

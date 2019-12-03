@@ -30,6 +30,7 @@ class BrandModel(BrandEntity):
             return True, None
         except SQLAlchemyError as e:
             db.session.rollback()
+            BrandEntity.reindex()
             return False, str(e.orig)
 
     @classmethod
@@ -38,6 +39,7 @@ class BrandModel(BrandEntity):
             brand = BrandEntity(name=name)
             db.session.add(brand)
             db.session.commit()
+            BrandEntity.reindex()
             return True, None
         except SQLAlchemyError as e:
             db.session.rollback()

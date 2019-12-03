@@ -29,6 +29,7 @@ class CategoryModel(CategoryEntity):
             db.session.query(self.__class__).filter(self.__class__.id == _id).update(
                 {"name": name, "brand_id": brand_id})
             db.session.commit()
+            CategoryEntity.reindex()
             return True, None
         except:
             return False, Errors.ERROR_EXIST.value
@@ -39,6 +40,7 @@ class CategoryModel(CategoryEntity):
             category = CategoryEntity(name=name, brand_id=brand_id)
             db.session.add(category)
             db.session.commit()
+            CategoryEntity.reindex()
             return True
         except:
             return False

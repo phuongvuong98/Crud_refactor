@@ -9,7 +9,7 @@ class Store(SearchableMixin, db.Model):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     address_id = db.Column(db.Integer, db.ForeignKey('address.id'))
-    store_name = db.Column(db.String(50))
+    store_name = db.Column(db.String(100))
 
     product_variant = db.relationship(
         "ProductVariant", backref='store', lazy="dynamic")

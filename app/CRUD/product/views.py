@@ -5,8 +5,6 @@ from app.CRUD.brand.models import BrandModel
 from app.CRUD.product.models import ProductModel
 from app.CRUD.category.models import CategoryModel
 
-from constants import Errors
-
 product_blueprint = Blueprint('product', __name__, template_folder='templates')
 
 
