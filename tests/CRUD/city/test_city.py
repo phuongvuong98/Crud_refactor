@@ -1,5 +1,5 @@
 from app import db
-from app.search import City
+from app.entity.mysql.city import City
 from tests.test_client import FlaskClientTestCase
 
 
@@ -13,7 +13,8 @@ class CityTestCase(FlaskClientTestCase):
     # Ensure list city is showed
     def test_list_cate(self):
         with self.client:
-            response = self.client.get('/city', follow_redirects=True)
+            response = self.client.get('http://0.0.0.0:5000/city/', follow_redirects=True)
+            print(response.data)
             self.assertIn(b'City Table', response.data)
 
     # Ensure city is created

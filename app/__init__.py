@@ -3,7 +3,8 @@ from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from config import config
 from elasticsearch import Elasticsearch
-db = SQLAlchemy()
+
+db = SQLAlchemy(session_options={"autoflush": False, "autocommit": False, "expire_on_commit": False})
 
 
 def create_app(config_name):
@@ -12,9 +13,11 @@ def create_app(config_name):
     app.config.from_object(config[config_name])
     config[config_name].init_app(app)
     db.init_app(app)
+
     app.elasticsearch = Elasticsearch([app.config['ELASTICSEARCH_URL']]) \
         if app.config['ELASTICSEARCH_URL'] else None
     print(app.config['ELASTICSEARCH_URL'])
+
     from app.CRUD.city.views import city_blueprint
     from app.CRUD.district.views import district_blueprint
     from app.CRUD.color.views import color_blueprint
@@ -25,6 +28,7 @@ def create_app(config_name):
     from app.CRUD.brand.views import brand_blueprint
     from app.CRUD.product_variant.views import variant_blueprint
     from app.CRUD.search.views import search_blueprint
+    from app.CRUD.rabbitmq.views import rabbitmq_blueprint
 
     app.register_blueprint(city_blueprint, url_prefix='/city')
     app.register_blueprint(district_blueprint, url_prefix='/district')
@@ -35,6 +39,8 @@ def create_app(config_name):
     app.register_blueprint(product_blueprint, url_prefix='/product')
     app.register_blueprint(brand_blueprint, url_prefix='/brand')
     app.register_blueprint(variant_blueprint, url_prefix='/variants')
-    app.register_blueprint(search_blueprint, url_prefix='/')
+    app.register_blueprint(search_blueprint, url_prefix='/search')
+    app.register_blueprint(rabbitmq_blueprint, url_prefix='/rabbitmq')
+
 
     return app

@@ -27,6 +27,7 @@ class ColorModel(ColorEntity):
     def edit(self, _id, value):
         try:
             db.session.query(self.__class__).filter(self.__class__.id == _id).update({"value": value})
+            db.session.update.append(self.query.filter_by(id=_id).first())
             db.session.commit()
             ColorEntity.reindex()
             return True, None

@@ -1,6 +1,5 @@
 
 from sqlalchemy.exc import SQLAlchemyError
-
 from app import db
 from app.entity.mysql.city import City as CityEntity
 from constants import Pages
@@ -28,6 +27,7 @@ class CityModel(CityEntity):
     def edit(self, _id, name):
         try:
             db.session.query(self.__class__).filter(self.__class__.id == _id).update({"name": name})
+            db.session.update.append(self.query.filter_by(id=_id).first())
             db.session.commit()
             CityEntity.reindex()
             return True, None
@@ -48,3 +48,7 @@ class CityModel(CityEntity):
 
     def get_value(self):
         return self.name
+
+
+
+

@@ -28,6 +28,7 @@ class CategoryModel(CategoryEntity):
         try:
             db.session.query(self.__class__).filter(self.__class__.id == _id).update(
                 {"name": name, "brand_id": brand_id})
+            db.session.update.append(self.query.filter_by(name=name).first())
             db.session.commit()
             CategoryEntity.reindex()
             return True, None

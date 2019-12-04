@@ -18,6 +18,7 @@
           href="{{ url_for('static', filename='styles/shards-dashboards.1.1.0.min.css') }}">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"
             integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
     {% block head %}{% endblock %}
 </head>
 
@@ -111,20 +112,21 @@
     </div>
     </aside>
     <!-- End Main Sidebar -->
-    <main class="main-content col-lg-10 col-md-9 col-sm-12 p-0 offset-lg-2 offset-md-3">
+    <main class="main-content col-lg-10 col-md-9 col-sm-12 p-0 offset-lg-2 offset-md-3 px-4">
         <div class="main-navbar sticky-top bg-white">
             <!-- Main Navbar -->
             <nav class="navbar align-items-stretch navbar-light flex-md-nowrap p-0">
-                <form action="{{ url_for('search.home') }}" method="GET" class="main-navbar__search w-100 d-none d-md-flex d-lg-flex">
+                <form action="{{ url_for('search.full_text') }}" method="GET"
+                      class="main-navbar__search w-100 d-none d-md-flex d-lg-flex" id="search_form">
                     <div class="input-group input-group-seamless ml-3">
-                        <div class="input-group-prepend">
+                        {{ form.q(placeholder="Search for something...", class="navbar-search form-control", id="user_input") }}
+                    </div>
+                    <div class="input-group input-group-seamless border-left ">
+                        <div class="input-group-prepend w-100">
                             <div class="input-group-text">
-                                <i class="fas fa-search"></i>
+                                <input id="submit" type="submit" value="Search" class="form-control btn btn-primary">
                             </div>
                         </div>
-{#                        <input class="navbar-search form-control" type="text" placeholder="Search for something..."#}
-{#                               aria-label="Search">#}
-                        {{ form.q(placeholder="Search for something...", class="navbar-search form-control") }}
                     </div>
                 </form>
                 <ul class="navbar-nav border-left flex-row ">
@@ -154,19 +156,19 @@
         <!-- content -->
         {% if search_obj == [] %}
             <div class="page-header row no-gutters py-4 mb-3 border-bottom">
-              <div class="col-12 col-sm-12 text-center mb-0">
-                <h3 class="page-title">Don't have result</h3>
-              </div>
-        </div>
+                <div class="col-12 col-sm-12 text-center mb-0">
+                    <h3 class="page-title">Don't have result</h3>
+                </div>
+            </div>
         {% endif %}
         {% for obj in search_obj %}
-        <div class="page-header row no-gutters py-4 mb-3 border-bottom">
-              <div class="col-12 col-sm-4 text-center text-sm-left mb-0">
-                <span class="text-uppercase page-subtitle">{{ obj.__tablename__ }}</span>
-                <h3 class="page-title">{{ obj.get_value() }}</h3>
-              </div>
-        </div>
-    {% endfor %}
+            <div class="page-header row no-gutters py-4 mb-3 border-bottom">
+                <div class="col-12 col-sm-4 text-center text-sm-left mb-0">
+                    <span class="text-uppercase page-subtitle">{{ obj["_index"] }}</span>
+                    <h3 class="page-title">{{ obj["_source"]["name"] or obj["_source"]["value"] or obj["_source"]["store_name"] or obj["_source"]["detail"] or obj["_source"]["price"] }}</h3>
+                </div>
+            </div>
+        {% endfor %}
     </main>
 </div>
 
@@ -191,6 +193,19 @@
 <script src="{{ url_for('static', filename='handle_edit_form.js') }}"></script>
 {% block addition %}
 {% endblock %}
+
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+<script src="{{ url_for('static', filename='search/suggestion.js') }}"></script>
+
+<script>
+    $('.input').keypress(function (e) {
+        if (e.which == 13) {
+            $('form#search_form').submit();
+            return false;
+        }
+    });
+</script>
+
 </body>
 
 </html>

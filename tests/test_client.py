@@ -11,6 +11,6 @@ class FlaskClientTestCase(unittest.TestCase):
         self.client = self.app.test_client(use_cookies=True)
 
     def tearDown(self):
-        db.session.remove()
-        db.drop_all()
+        # db.session.remove()
+        # db.drop_all()
         self.app_context.pop()

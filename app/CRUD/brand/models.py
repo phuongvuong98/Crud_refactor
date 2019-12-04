@@ -26,6 +26,7 @@ class BrandModel(BrandEntity):
     def edit(self, _id, name):
         try:
             db.session.query(self.__class__).filter(self.__class__.id == _id).update({"name": name})
+            db.session.update.append(self.query.filter_by(id=_id).first())
             db.session.commit()
             return True, None
         except SQLAlchemyError as e:

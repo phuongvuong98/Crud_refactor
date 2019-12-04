@@ -18,6 +18,7 @@ class DistrictModel(DistrictEntity):
     def edit(self, _id, name, city_id):
         try:
             db.session.query(self.__class__).filter(self.__class__.id == _id).update({"name": name, "city_id": city_id})
+            db.session.update.append(self.query.filter_by(name=name).first())
             db.session.commit()
             DistrictEntity.reindex()
             return True, None

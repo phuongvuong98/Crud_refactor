@@ -2,7 +2,6 @@ from sqlalchemy.exc import SQLAlchemyError
 
 from app import db
 from app.entity.mysql.address import Address as AddressEntity
-from app.search import query_index
 from constants import Pages
 from constants import Errors
 
